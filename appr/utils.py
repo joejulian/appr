@@ -7,6 +7,9 @@ import itertools
 import os
 import re
 import sys
+import itertools
+from termcolor import colored
+
 
 from termcolor import colored
 
@@ -80,6 +83,26 @@ def mkdir_p(path):
             pass
         else:
             raise
+
+
+def colorize(status):
+    msg = {}
+    if os.getenv("APPR_COLORIZE_OUTPUT", "true") == "true":
+        msg = {
+            'ok': 'green',
+            'created': 'yellow',
+            'updated': 'cyan',
+            'replaced': 'yellow',
+            'absent': 'green',
+            'deleted': 'red',
+            'protected': 'magenta'
+        }
+    color = msg.get(status, None)
+    if color:
+        return colored(status, color)
+    else:
+        return status
+
 
 
 class Singleton(type):
@@ -165,3 +188,7 @@ def symbol_by_name(name, aliases={}, imp=None, package=None, sep='.', default=No
         if default is None:
             raise
     return default
+
+
+def flatten(array):
+    return list(itertools.chain(*array))
